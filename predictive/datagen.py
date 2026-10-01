@@ -69,6 +69,15 @@ def _seed_alerts(df: pd.DataFrame) -> pd.DataFrame:
     al = pd.DataFrame(events, columns=["timestamp", "machine_id", "variable", "severity", "value", "limit", "message"])
     if al.empty:
         return pd.DataFrame(columns=ALERT_COLUMNS)
+    al["_t"] = pd.to_datetime(al["timestamp"])
+    keep, last_seen = [], {}
+    for i, r in al.iterrows():  # um alerta por problema: ignora reincidência em até 36 h
+        k = (r["machine_id"], r["variable"], r["severity"])
+        if k in last_seen and (r["_t"] - last_seen[k]) < pd.Timedelta(hours=36):
+            continue
+        last_seen[k] = r["_t"]
+        keep.append(i)
+    al = al.loc[keep].drop(columns="_t").reset_index(drop=True)
     cutoff = pd.Timestamp(df["timestamp"].max()) - pd.Timedelta(hours=36)
     al["status"] = np.where(pd.to_datetime(al["timestamp"]) >= cutoff, "Aberto", "Resolvido")
     al["acknowledged_by"] = ""

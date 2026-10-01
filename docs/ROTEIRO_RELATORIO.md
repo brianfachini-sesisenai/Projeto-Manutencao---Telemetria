@@ -5,11 +5,11 @@ partida: confirmem edição/ano e leiam as fontes antes de citá-las.**
 
 ## 1. Fundamentação teórica (tema geral — todas as equipes)
 * **Fundamentos de UX para dados** (Design e Usabilidade, 20%): leis da Gestalt, hierarquia visual, contraste, paletas
-  acessíveis, carga cognitiva, heurísticas de Nielsen. Evidência: tabela em `/diagnostico`, estados com cor+forma+texto,
-  tema claro/escuro. Sugestões: Stephen Few, *Information Dashboard Design*; Edward Tufte, *The Visual Display of
+  acessíveis, carga cognitiva, heurísticas de Nielsen. Evidência: aba *Princípios de design* em `/sobre`, estados com cor+forma+texto,
+  uma pergunta por tela, tema claro/escuro. Sugestões: Stephen Few, *Information Dashboard Design*; Edward Tufte, *The Visual Display of
   Quantitative Information*; Nielsen, *10 Usability Heuristics*; WCAG 2.x (contraste e uso de cor).
 * **Frameworks de código** (Programação e Frameworks, 30%): Dash/Plotly (usado) vs. D3.js, Chart.js, Streamlit, Matplotlib/
-  Seaborn. Evidência: comparativo em `/diagnostico`; callbacks em `predictive/app.py`, figuras em `predictive/figs.py`.
+  Seaborn. Evidência: comparativo em `/sobre` › Tecnologias; callbacks em `predictive/app.py`, figuras em `predictive/figs.py`.
 * **Integração web** (20%): HTML5/CSS/JS, REST e WebSocket (RFC 6455) vs. polling. Evidência: `/ws`, `/api/*`,
   `assets/live.js`, layout responsivo, medição do pacote por tick (1 KB) vs. snapshot completo (28 KB).
 * **Ferramentas de BI**: Power BI e Tableau — quando preferir BI de mercado e quando código próprio. Sugestão de
@@ -22,16 +22,16 @@ partida: confirmem edição/ano e leiam as fontes antes de citá-las.**
 * Público-alvo: engenheiros de manutenção e confiabilidade — requisitos: ver estado de relance, alertas acionáveis, tendência.
 
 ## 3. Diagnóstico crítico (exigido no PDF)
-Usar a página `/diagnostico`: falhas de usabilidade, gargalos de performance (com as medições), oportunidades de melhoria.
+Usar a página `/sobre` (abas *Diagnóstico crítico* e *Medições*): falhas de usabilidade, gargalos de performance (com as medições), oportunidades de melhoria.
 Sugestão: registrar *antes/depois* de uma melhoria (ex.: downsampling ou `extendData`) com tempos medidos.
 
 ## 4. Demonstração (15 min) — roteiro sugerido
-1. Visão geral: cartões, mapa de severidade (1 min).
-2. Telemetria: explicar zonas e o indicador de tempo real (2 min).
-3. **Injetar falha de rolamento** na PR-01 → mostrar o alerta chegando pelo ticker (2 min).
-4. Alertas: reconhecer, gerar OS, ver `data/work_orders.csv` mudar (2 min).
-5. Preditiva: PR-02 com RUL de poucos dias; explicar R² e limites do modelo (3 min).
-6. Diagnóstico/argumentação: UX, stack, limitações, melhorias (5 min).
+1. **Visão geral** (2 min): o resumo no topo e os cartões "precisam de atenção"; explicar a hierarquia e o estado por cor+forma+texto.
+2. **Monitoramento** (2 min): abas de variável, zonas de limite, indicador de tempo real; mostrar o tema escuro.
+3. **Injetar falha** (2 min): abrir o *Modo demonstração*, injetar rolamento na PR-01 e ver a notificação e o resumo mudarem para crítico.
+4. **Alertas** (2 min): reconhecer → criar OS → iniciar; mostrar `data/work_orders.csv` mudando.
+5. **Análise preditiva** (3 min): PR-02 com RUL de poucos dias; explicar R² e as limitações do modelo.
+6. **Sobre / argumentação** (4 min): princípios de design, diagnóstico crítico, tecnologias, melhorias.
 
 ## 5. Perguntas prováveis na arguição
 * Por que CSV e não banco de dados? (escopo; limites listados no diagnóstico)

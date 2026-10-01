@@ -21,15 +21,23 @@ Variáveis de ambiente: `PORT` (8050), `HOST` (127.0.0.1), `TICK_SECONDS` (2).
 
 ## Telas
 
-| Rota | Conteúdo |
-|---|---|
-| `/` | KPIs da frota, cartões por máquina (estado, índice de saúde, valores, sparkline), mapa de severidade |
-| `/telemetria` | Séries em tempo real (WebSocket) com zonas de atenção/crítico + **simulador de falhas** para demonstrar alertas |
-| `/preditiva` | Índice de saúde, anomalias (z-score robusto), tendência e **RUL** por regressão linear, boxplot e correlação |
-| `/alertas` | Alertas e ordens de serviço (reconhecer, resolver, gerar OS, criar OS manual, exportar CSV) |
-| `/diagnostico` | Fundamentos de UX aplicados, medições reais do protótipo, diagnóstico crítico e comparativo de tecnologias |
+Cada tela responde a **uma pergunta** e esconde o detalhe técnico em blocos recolhíveis.
 
-O botão **Alternar tema** muda entre claro e escuro (preferência salva no navegador).
+| Rota | Pergunta que responde | Conteúdo |
+|---|---|---|
+| `/` | O que precisa da minha atenção agora? | Resumo do estado da planta, cartões "precisam de atenção" (com o motivo e a tendência) e lista compacta de todas as máquinas |
+| `/monitoramento` | Como está esta máquina agora? | Três variáveis como abas-resumo; um gráfico em tempo real (WebSocket) com zonas de limite; simulador de falhas recolhido |
+| `/analise` | Quando preciso agir? | Diagnóstico em linguagem natural, vida útil restante (RUL), tendência/anomalias, índice de saúde e comparação entre máquinas; ordem de serviço em um clique |
+| `/alertas` | O que preciso tratar? | Alertas e ordens de serviço com a ação seguinte em cada linha (reconhecer, criar OS, iniciar, concluir); exportação CSV |
+| `/sobre` | Como foi feito? | Princípios de design aplicados, diagnóstico crítico, tecnologias, arquitetura e medições reais |
+
+O botão de contraste no canto superior direito alterna entre tema claro e escuro (preferência salva no navegador).
+
+## Princípios de design aplicados
+
+Hierarquia visual (um número dominante por tela), proximidade e região comum (cartões), similaridade (estado sempre como "chip"),
+figura-fundo (zonas de limite translúcidas atrás da série), revelação progressiva (detalhes recolhidos) e cor acessível: estado = cor + forma +
+texto, contraste de texto ≥ 4,5:1 e uma única cor de destaque nos gráficos. Detalhes em `/sobre`.
 
 ## Arquitetura
 
@@ -45,9 +53,9 @@ API REST: /api/sensors  /api/history?machine=PR-01  /api/snapshot  /api/health
 * `predictive/analytics.py` — severidade, índice de saúde, anomalias, RUL, detector de alertas
 * `predictive/stream.py` — simulador em tempo real, hub WebSocket e API REST
 * `predictive/store.py` — persistência em CSV
-* `predictive/figs.py`, `pages.py`, `app.py`, `diagnostic.py` — interface
+* `predictive/figs.py`, `ui.py`, `pages.py`, `insights.py`, `app.py`, `diagnostic.py` + `assets/` (CSS e cliente WebSocket) — interface
 
 ## Limitações (assumidas)
 
 Dados simulados; limites ilustrativos (não são de norma/fabricante); RUL por regressão linear é didático; CSV como
-banco não escala; estado do simulador em memória de um único processo. Detalhes na página `/diagnostico`.
+banco não escala; estado do simulador em memória de um único processo. Detalhes na página `/sobre`.

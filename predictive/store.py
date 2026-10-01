@@ -66,13 +66,19 @@ def append_alerts(events: list[dict]) -> list[dict]:
         df = _read(ALERTS_FILE, ALERT_COLUMNS)
         n = len(df)
         full = []
+        pending = df[df["status"] != "Resolvido"]
+        open_keys = set(zip(pending["machine_id"], pending["variable"], pending["severity"]))
         for e in events:
+            if (e["machine_id"], e["variable"], e["severity"]) in open_keys:
+                continue  # já existe alerta pendente para o mesmo problema
+            open_keys.add((e["machine_id"], e["variable"], e["severity"]))
             n += 1
             row = {c: "" for c in ALERT_COLUMNS}
             row.update(e)
             row.update(alert_id=f"AL-{n:05d}", status="Aberto")
             full.append(row)
-        _write(ALERTS_FILE, pd.concat([df, pd.DataFrame(full)], ignore_index=True))
+        if full:
+            _write(ALERTS_FILE, pd.concat([df, pd.DataFrame(full)], ignore_index=True))
         return full
 
 
