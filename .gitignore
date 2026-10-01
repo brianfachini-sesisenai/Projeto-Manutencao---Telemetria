@@ -5,3 +5,7 @@ data/*.csv
 !data/.gitkeep
 .DS_Store
 *.whl
+docs/relatorio/*.aux
+docs/relatorio/*.log
+docs/relatorio/*.toc
+docs/relatorio/*.out
