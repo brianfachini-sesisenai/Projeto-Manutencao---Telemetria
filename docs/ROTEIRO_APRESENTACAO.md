@@ -16,6 +16,17 @@ por que foi feito assim e como se explica em palavras simples. Os termos técnic
 > "Criamos um painel que mostra, em tempo real, a saúde de máquinas críticas da fábrica, avisa quando algo sai do normal e
 > estima **em quantos dias** uma máquina pode chegar a um estado crítico, para a equipe de manutenção agir **antes** de quebrar."
 
+## Como descrever o sistema (ERP?)
+
+O PredictaMaq **não é um ERP**. Um ERP integra a empresa toda (finanças, compras, estoque, RH, produção). O que fizemos é um **painel de monitoramento de condição**
+com um módulo simples de **manutenção** (alertas e ordens de serviço), parecido com o módulo de manutenção de um ERP ou de um sistema de gestão de manutenção (CMMS).
+Frase segura para a apresentação:
+
+> "O PredictaMaq é um painel de monitoramento e manutenção preditiva, **inspirado no módulo de manutenção de sistemas de gestão como os ERPs**: ele tem
+> alertas e ordens de serviço, mas o foco é monitorar as máquinas e prever falhas."
+
+Evite dizer "é um ERP" ou "simula um ERP completo": se perguntarem, o professor pode notar que faltam os outros módulos.
+
 ## Roteiro (15 minutos)
 
 ### 1. Abertura — 0:00 a 1:30 (sem mexer no site ainda)
@@ -120,6 +131,9 @@ por que foi feito assim e como se explica em palavras simples. Os termos técnic
 - **Como aplicaram os princípios de design?** Uma pergunta por tela, o mais importante em destaque, estado por cor+forma+texto, detalhes recolhidos e contraste calculado.
 - **Testaram com usuários?** Não; a avaliação foi feita pela equipe. É uma limitação que listamos.
 - **O que mudariam?** Banco de dados real, atualização dos gráficos só com o ponto novo, modelos de previsão melhores e limites configuráveis.
+
+## Dica: tooltips
+Passe o mouse sobre os ícones **ⓘ** (Saúde, Vibração, Temperatura, Pressão, "Até o limite crítico", Confiança) para mostrar a explicação na hora; é um bom momento para falar de **carga cognitiva** e **ajuda contextual**.
 
 ## Dicas rápidas
 - Fale **do problema do usuário** antes da tecnologia.

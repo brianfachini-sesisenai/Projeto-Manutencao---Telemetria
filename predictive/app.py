@@ -13,7 +13,7 @@ from .analytics import enrich, estimate_rul, level_of, rolling_anomalies
 from .config import FAULTS, MACHINE_BY_ID, MACHINE_IDS, MACHINES, ROOT, STATUS_LABEL, VAR_KEYS, VARIABLES
 from .figs import compare_fig, fmt, health_fig, live_fig, trend_fig
 from .stream import Hub, Simulator, register_routes
-from .ui import chip
+from .ui import TIPS, chip, tip
 
 NAV = [("/", "Visão geral"), ("/monitoramento", "Monitoramento"), ("/analise", "Análise preditiva"), ("/alertas", "Alertas"), ("/sobre", "Sobre")]
 SHORT = insights.SHORT
@@ -121,15 +121,16 @@ def create_app() -> tuple[Dash, Simulator]:
                 cards.append(html.Div([
                     html.Div([html.Div([html.Div(m["name"], className="attn-name"), html.Div(f"{m['machine_id']} · {m['area']}", className="attn-area")]), chip(st)], className="attn-top"),
                     html.P(insights.reason(m["machine_id"], last), className="attn-reason"),
-                    html.P(["Tendência: ", tt], className="attn-trend") if tt else html.Div(),
+                    html.P([tip("Tendência", TIPS["trend"]), ": ", tt], className="attn-trend") if tt else html.Div(),
                     html.Div([dcc.Link("Analisar tendência", href=f"/analise?machine={m['machine_id']}", className="btn primary sm"),
                               dcc.Link("Ver em tempo real", href=f"/monitoramento?machine={m['machine_id']}", className="btn ghost sm")], className="attn-foot"),
                 ], className=f"card attn s{st}"))
             attn = html.Div(cards, className="attn-grid")
         else:
             attn = html.Div([chip(0, "Tudo certo"), "Nenhuma máquina fora da faixa normal neste momento."], className="card allgood")
-        head = html.Div([html.Div("Estado"), html.Div("Máquina"), html.Div("Saúde", className="c-h"),
-                         html.Div("Vibração", className="c-v"), html.Div("Temperatura", className="c-v"), html.Div("Pressão", className="c-v"), html.Div()], className="mrow head")
+        head = html.Div([html.Div(tip("Estado", TIPS["state"])), html.Div("Máquina"), html.Div(tip("Saúde", TIPS["health"]), className="c-h"),
+                         html.Div(tip("Vibração", TIPS["vibration_mm_s"]), className="c-v"), html.Div(tip("Temperatura", TIPS["temperature_c"], "right"), className="c-v"),
+                         html.Div(tip("Pressão", TIPS["pressure_bar"], "right"), className="c-v"), html.Div()], className="mrow head")
         rows = []
         for m, d, last in sorted(data, key=lambda x: (-x[1]["status"], x[0]["machine_id"])):
             mt = m["type"]
@@ -154,7 +155,7 @@ def create_app() -> tuple[Dash, Simulator]:
         head = [html.Div(m["name"], className="machine-title"), chip(d["status"]),
                 html.Span(f"{m['area']} · saúde {fmt(d['hi'], 0)}/100 · carga {fmt(d['load'][-1], 0)}%", className="muted")]
         lvl = level_of(m["type"], var, last[var])
-        title = [html.H3(f"{insights.label(machine, var)} ({VAR_UNIT[var]})"), html.Span("Últimos " + {60: "2", 150: "5", 450: "15"}.get(n, "5") + " minutos", className="faint small")]
+        title = [html.H3([f"{insights.label(machine, var)} ({VAR_UNIT[var]})  ", tip("Zonas de limite", TIPS["zones"])]), html.Span("Últimos " + {60: "2", 150: "5", 450: "15"}.get(n, "5") + " minutos", className="faint small")]
         fig = live_fig(m, var, d["t"][-n:], d[SHORT[var]][-n:], theme, lvl)
         res = [head, title, fig]
         for v in VAR_KEYS:
@@ -191,7 +192,7 @@ def create_app() -> tuple[Dash, Simulator]:
         else:
             title, body, chip_el = "Sem sinais de degradação", "Nenhuma variável aponta para o limite crítico nos próximos 60 dias, com base nos últimos 5 dias.", chip(0, "Estável")
         sev = 2 if (st == 2 or (days is not None and days < 7)) else 1 if days is not None else 0
-        big = html.Div([html.Div("Até o limite crítico", className="big-label"),
+        big = html.Div([html.Div(tip("Até o limite crítico", TIPS["rul"], "right"), className="big-label"),
                         html.Div([fmt(days, 0), html.Small("dias")] if days is not None else "—", className="big-num")], className=f"big s{sev}")
         left = html.Div([chip_el, html.H2(title, className="insight-title"), html.P(body, className="insight-body"),
                          html.Div([html.Button("Gerar ordem de serviço", id="pred-make-wo", className="btn primary", n_clicks=0)] if (main or st) else [html.Div(id="pred-make-wo")], className="insight-actions")])
@@ -222,10 +223,10 @@ def create_app() -> tuple[Dash, Simulator]:
         if view in VAR_KEYS:
             an = rolling_anomalies(mdf.set_index("timestamp")[view])
             fig = trend_fig(mdf, machine, view, ruls[view], theme, an)
-            title = [html.H3(f"{insights.label(machine, view)}: histórico e projeção"), html.Span("Linha pontilhada = projeção · círculos = anomalias", className="faint small")]
+            title = [html.H3([f"{insights.label(machine, view)}: histórico e projeção  ", tip("Zonas de limite", TIPS["zones"])]), html.Span("Linha pontilhada = projeção · círculos = anomalias", className="faint small")]
         elif view == "health":
             fig = health_fig(mdf, theme)
-            title = [html.H3("Índice de saúde"), html.Span("0–100 · quanto menor, mais perto dos limites", className="faint small")]
+            title = [html.H3(tip("Índice de saúde", TIPS["health"])), html.Span("0–100 · quanto menor, mais perto dos limites", className="faint small")]
         else:
             fig = compare_fig({m["machine_id"]: sim.snapshot()["machines"][m["machine_id"]]["hi"] for m in MACHINES}, machine, theme)
             title = [html.H3("Índice de saúde por máquina (agora)"), html.Span("Destaque = máquina selecionada", className="faint small")]
@@ -238,7 +239,7 @@ def create_app() -> tuple[Dash, Simulator]:
         detail = html.Div([
             html.P("A estimativa ajusta uma reta às médias horárias dos últimos 5 dias e a prolonga até o limite crítico. É um modelo didático: "
                    "assume tendência linear e perde precisão quando a série oscila ou tem picos (confiança baixa).", className="muted"),
-            html.Table([html.Tr([html.Th("Variável"), html.Th("Tendência"), html.Th("Até o crítico"), html.Th("Confiança")])] + rows, className="kv"),
+            html.Table([html.Tr([html.Th("Variável"), html.Th(tip("Tendência", TIPS["slope"])), html.Th(tip("Até o crítico", TIPS["rul"])), html.Th(tip("Confiança", TIPS["confidence"], "right"))])] + rows, className="kv"),
             html.P("Anomalias: pontos que se afastam da mediana móvel em mais de 3,5 desvios robustos (mediana/MAD).", className="muted small", style={"marginTop": "12px"}),
         ])
         return title, fig, detail
@@ -248,7 +249,8 @@ def create_app() -> tuple[Dash, Simulator]:
         lvl = 2 if r.severity == "Crítico" else 1
         m = MACHINE_BY_ID.get(r.machine_id, {"name": r.machine_id})
         meta = f"{insights.ago(r.timestamp)} · {r.status}" + (f" · {r.work_order_id}" if r.work_order_id else "")
-        mk = lambda action, label, cls: html.Button(label, id={"type": "al-act", "action": action, "id": r.alert_id}, className=f"btn sm {cls}", n_clicks=0)
+        hints = {"ack": "Marca que você viu o alerta e está cuidando dele.", "wo": "Abre uma ordem de serviço de manutenção ligada a este alerta.", "resolve": "Encerra o alerta: o problema foi tratado."}
+        mk = lambda action, label, cls: html.Button(label, id={"type": "al-act", "action": action, "id": r.alert_id}, className=f"btn sm {cls}", n_clicks=0, title=hints[action])
         acts = []
         if r.status == "Aberto":
             acts = [mk("ack", "Reconhecer", "primary")] + ([] if r.work_order_id else [mk("wo", "Criar OS", "")])
@@ -260,7 +262,8 @@ def create_app() -> tuple[Dash, Simulator]:
     def _wo_row(r) -> html.Div:
         prio = {"Alta": (2, "Alta"), "Média": (1, "Média"), "Baixa": (None, "Baixa")}.get(r.priority, (None, r.priority))
         done = r.status in ("Concluída", "Cancelada")
-        mk = lambda action, label: html.Button(label, id={"type": "wo-act", "action": action, "id": r.wo_id}, className="btn sm primary", n_clicks=0)
+        mk = lambda action, label: html.Button(label, id={"type": "wo-act", "action": action, "id": r.wo_id}, className="btn sm primary", n_clicks=0,
+                                               title="Muda o status da ordem para o próximo passo.")
         acts = [chip(0, r.status) if r.status == "Concluída" else chip(None, r.status, neutral=True)]
         if r.status == "Aberta":
             acts.append(mk("start", "Iniciar"))

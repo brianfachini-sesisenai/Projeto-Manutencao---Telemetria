@@ -48,6 +48,7 @@ def tab(name: str, sim):
             ("Figura-fundo", "Cartões brancos sobre fundo neutro; nos gráficos, a série em primeiro plano e as zonas de limite como fundo translúcido.", "Gráficos"),
             ("Carga cognitiva e revelação progressiva", "Uma pergunta por tela; uma variável por gráfico; detalhes técnicos e simulador ficam em blocos recolhidos.", "Todas"),
             ("Cor acessível", "Estado = cor + forma (círculo, triângulo, quadrado) + texto; contraste calculado: texto ≥ 4,5:1 e elementos gráficos ≥ 3:1 (exceto o âmbar no tema claro, compensado por forma e rótulo). Cor de destaque única (azul) nos gráficos.", "Todas"),
+            ("Ajuda contextual (tooltips)", "Ícone “i” ao lado de termos técnicos (saúde, RUL, confiança, zonas) explica o significado ao passar o mouse ou focar com o teclado; botões de ação têm dica do que fazem.", "Todas"),
             ("Feedback do sistema", "Indicador de conexão em tempo real, notificação de novo alerta e mensagens após cada ação.", "Cabeçalho"),
         ]
         return html.Div(_table(["Princípio", "Como foi aplicado", "Onde"], rows), className="card card-pad prose")

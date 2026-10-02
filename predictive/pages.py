@@ -4,7 +4,7 @@ from __future__ import annotations
 from dash import dcc, html
 
 from .config import FAULTS, MACHINES, MACHINE_IDS, VARIABLES
-from .ui import details, machine_seg, page_head, seg
+from .ui import TIPS, details, machine_seg, page_head, seg, tip
 
 MACHINE_OPTIONS = [{"label": f"{m['machine_id']} · {m['name']}", "value": m["machine_id"]} for m in MACHINES]
 
@@ -19,7 +19,7 @@ def overview():
 
 
 def _vtab(var: str, name: str):
-    return html.Div([html.Span(name, className="vtab-name"), html.Span(id=f"tv-{var}", className="vtab-val"),
+    return html.Div([html.Span(tip(name, TIPS[var]), className="vtab-name"), html.Span(id=f"tv-{var}", className="vtab-val"),
                      html.Span(id=f"ts-{var}", className="vtab-state")], className="vtab")
 
 
