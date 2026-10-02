@@ -35,7 +35,7 @@ VAR_TABS = [(k, v["label"]) for k, v in VARIABLES.items()]
 
 def tip(label, text: str, align: str = "left"):
     """Rótulo com ícone 'i' e dica contextual (hover/foco). align: 'left' ou 'right' (evita estourar a borda)."""
-    return html.Span([label, html.Span("i", className="tip-i", **{"aria-hidden": "true"})], className=f"tip {align}", tabIndex=0,
+    return html.Span([label, html.Span(className="tip-i", **{"aria-hidden": "true"})], className=f"tip {align}", tabIndex=0,
                      **{"data-tip": text, "aria-label": f"{label if isinstance(label, str) else ''}: {text}"})
 
 
