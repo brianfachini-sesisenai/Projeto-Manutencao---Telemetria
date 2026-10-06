@@ -97,6 +97,22 @@ Evite dizer "é um ERP" ou "simula um ERP completo": se perguntarem, o professor
 - **Pessoa 3:** Alertas + Análise preditiva.
 - **Pessoa 4/5:** Tecnologia, limitações e conclusão.
 
+## Como explicar os dados e o gráfico de tendência
+
+**Os dados (o que dizer e o que evitar)**
+- Dizer: "Os dados são **simulados**: um programa em Python, que criamos com apoio de IA, gera leituras com variação ao longo do dia, desgaste e **ruído aleatório**, e guarda tudo em **arquivos CSV**. Ao vivo, o mesmo programa gera uma nova leitura a cada 2 segundos."
+- Evitar: "a IA gera os dados" (quem gera é o programa) e "é só random" (há um modelo; o aleatório é só o ruído do sensor). Também não é um banco como MySQL: são arquivos CSV.
+
+**O gráfico de tendência (Análise preditiva)**
+1. Linha fina clara = leituras brutas (a cada 10 min). Linha azul forte = média por hora.
+2. Linha pontilhada = a **reta de tendência** calculada com as médias dos últimos 5 dias e **prolongada** para a frente.
+3. Quadrado vermelho = onde a reta cruza o limite crítico; a distância até ali é o "≈ 5 dias".
+4. Círculos vermelhos = anomalias (pontos que fogem do padrão recente).
+- Fala: "Se a vibração continuar subindo no ritmo dos últimos 5 dias, chega ao limite crítico em cerca de 5 dias. A confiança mostra o quanto os dados seguem uma reta."
+
+**O que admitir:** a degradação da PR-02 foi programada no gerador (o objetivo é demonstrar o método, não provar previsão real); a tendência usa o **histórico** e não muda ao injetar falha ao vivo; o modelo é uma reta, simples e didático.
+Se perguntarem "isso prevê de verdade?": "Prevê dentro da simulação. Em uma fábrica real usaríamos sensores reais e validaríamos o modelo com falhas passadas."
+
 ## Glossário em palavras simples
 
 | Termo | Explicação |
